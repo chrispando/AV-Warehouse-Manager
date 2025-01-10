@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Staging";
+}
+
+@model List<OrderSummary>
+
+<h1>Staging Summary</h1>
+<p class='font-italic'>Items in red will not be staged.</p>
+
+<table class = "table table-bordered table-condensed table-striped table-hover sortable">
+	<thead>
+		<tr>
+			<th>Make</th>
+			<th>Model</th>
+			<th>In Stock</th>
+			<th>Required</th>
+			<th>Action Taken</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach(var item in Model)
+		{
+
+			if (item.action == "Success")
+			{
+				<tr>
+					<td>@item.make</td>
+					<td>@item.model</td>
+					<td>@item.inStock</td>
+					<td>@item.required</td>
+					<td>@item.action</td>
+				</tr>
+			}
+			else
+			{
+			
+				<tr class = "table-danger">
+					<td>@item.make</td>
+					<td>@item.model</td>
+					<td>@item.inStock</td>
+					<td>@item.required</td>
+					<td>@item.action</td>
+				</tr>
+
+			}
+
+		}
+	</tbody>
+</table>
+<div class = "flex-row">
+	@if (ViewBag.danger=="1")
+	{
+		<button type = "submit" id='btnStageAction' class = "btn btn-primary w-25" onclick = "stageAction()" disabled>Stage</button>
+	}
+	else
+	{
+		<button type = "submit" id='btnStageAction' class = "btn btn-primary w-25" onclick = "stageAction()">Stage</button>
+	}
+
+<button type = "button" class = "btn btn-secondary w-25" onclick = "editAction()">Edit</button>
+</div>
+
+<script>
+	const danger = @ViewBag.danger;
+	function pageLoad() {
+		if (danger === 1) {
+			alert("btnStageAction");
+			$("#btnStageAction").hide();
+		}
+	}
+
+	function stageAction(){
+		var model = @Html.Raw(Json.Serialize(Model));
+		var model2 = JSON.stringify(model);
+		//alert(model2);
+		//start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("TakeStaging","Staging")',
+        contentType: 'application/json',
+        data: JSON.stringify(model2),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Read","Staging")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+	}
+
+
+	function editAction(){
+	var model = @Html.Raw(Json.Serialize(Model));
+	var model2 = JSON.stringify(model);
+	$.ajax({
+        url:'@Url.Action("EditStaging","Staging")',
+        type:"POST",
+		contentType: 'application/json',
+        data: JSON.stringify(model2),
+        success:function(data){
+		//console.log("DATA: ", data);
+        var urlToRedirect= '@Url.Action("EditOrderSummary","Staging")';
+		window.location.href = urlToRedirect; //Redirect here
+        },
+         error:function(data){
+            alert("Fail");
+         }
+       
+        
+    });
+	}
+</script>

@@ -1,0 +1,85 @@
+﻿@model List<Staging>
+
+@{
+    ViewData["Title"] = "Staging";
+}
+
+<h1>Update</h1>
+
+<table id = "myTable" class = "table">
+    <thead>
+        <tr>
+            <th>Serial</th>
+            <th>SKU</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Site</th>
+            <th>Room</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Staging s in Model)
+        {
+            
+            <tr>
+                <td>@s.serial</td>
+                <td>@s.sku</td>
+                <td>@s.make</td>
+                <td>@s.model</td>
+                <td>@s.quantity</td>
+                <td>@s.description</td>
+                <td>@s.site</td>
+                <td>@s.room</td>
+                <td><button class = "updateBtn btn btn-info" onclick = "updateProduct()">Edit</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function updateProduct(){
+        $("#myTable").unbind().on('click','.updateBtn',function(){
+            var currentRow = $(this).closest("tr")[0];
+            var cells = currentRow.cells;
+            var dataObject = JSON.stringify({
+    'serial': cells[0].textContent,
+    'sku': cells[1].textContent,
+    'make': cells[2].textContent,
+    'model': cells[3].textContent,
+    'quantity': cells[4].textContent,
+    'description': cells[5].textContent,
+    'site': cells[6].textContent,
+    'room': cells[7].textContent
+        });
+
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("SetUpdateSession","Staging")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Detail","Staging")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+        event.stopPropagation? event.stopPropagation() : event.cancelBubble = true;
+     return false;
+        });
+
+        return false;
+    }
+
+</script>

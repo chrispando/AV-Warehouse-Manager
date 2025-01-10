@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Truck";
+}
+
+@model IEnumerable<string>
+
+<h1>Truck</h1>
+
+<h2>Select Project</h2>
+ <a class="btn btn-secondary" asp-controller = "Truck" asp-action = "Create">Add To Truck</a>
+<hr />
+<form asp-action="Read" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Read">Back to Full List</a>
+        </p>
+    </div>
+</form>
+<table id = "myTable" class = "table table-bordered table-condensed table-striped table-hover sortable mb-5">
+    @foreach(var name in Model)
+    {
+    <tr>
+        <td>@name.ToString()</td>  
+        <td>
+             <button type="button"
+             onclick="myFunc()"
+         class = "btn-info projBtn">Select</button>
+            </td>
+        
+    </tr>
+    }
+   
+</table>
+
+<script>
+    function myFunc(){
+     
+    $("#myTable").unbind().on('click','.projBtn',function(){
+     // get the current row
+     var currentRow = $(this).closest("tr")[0]; 
+     var cells = currentRow.cells;
+
+    var dataObject = JSON.stringify({
+        'projectName': cells[0].textContent
+    });
+       
+      
+
+        $.ajax({
+    type: "POST",
+    //url: 'Home/Stage',
+    url: '@Url.Action("ProjectSelected", "Truck")',
+    contentType: 'application/json',
+    data: JSON.stringify(dataObject),
+    success:function(data) {
+      if(data.status=="true")
+      {
+        var urlToRedirect= '@Url.Action("DisplayProject","Truck")';
+        window.location.href = urlToRedirect; //Redirect here
+      }
+      else
+      {
+        alert(data.msg)
+      }
+    },
+    error: function () {
+        alert("Fail");
+    }
+});
+
+
+   
+     event.stopPropagation? event.stopPropagation() : event.cancelBubble = true;
+     return false;
+    });
+   
+    return false;
+ }
+</script>

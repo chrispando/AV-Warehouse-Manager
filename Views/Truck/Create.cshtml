@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Truck";
+}
+
+@model List<string>
+
+<h1>Add To Truck</h1>
+
+<h2>Select Project</h2>
+<hr />
+<table id = "myTable" class = "table table-bordered table-condensed table-striped table-hover sortable mb-5">
+    @foreach(var name in Model)
+    {
+    <tr>
+        <td>@name.ToString()</td>  
+        <td>
+             <button type="button"
+             onclick="myFunc()"
+         class = "btn-info projBtn">Select</button>
+            </td>
+        
+    </tr>
+    }
+   
+</table>
+
+<script>
+    function myFunc(){
+     
+    $("#myTable").unbind().on('click','.projBtn',function(){
+     // get the current row
+     var currentRow = $(this).closest("tr")[0]; 
+     var cells = currentRow.cells;
+
+    var dataObject = JSON.stringify({
+        'projectName': cells[0].textContent
+    });
+       
+      
+
+        $.ajax({
+    type: "POST",
+    //url: 'Home/Stage',
+    url: '@Url.Action("ProjectSelected_StagingList", "Truck")',
+    contentType: 'application/json',
+    data: JSON.stringify(dataObject),
+    success:function(data) {
+      if(data.status=="true")
+      {
+        var urlToRedirect= '@Url.Action("SelectForTruck","Truck")';
+        window.location.href = urlToRedirect; //Redirect here
+      }
+      else
+      {
+        alert(data.msg)
+      }
+    },
+    error: function () {
+        alert("Fail");
+    }
+});
+
+
+   
+     event.stopPropagation? event.stopPropagation() : event.cancelBubble = true;
+     return false;
+    });
+   
+    return false;
+ }
+</script>

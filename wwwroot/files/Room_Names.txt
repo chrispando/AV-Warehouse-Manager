@@ -1,0 +1,34 @@
+Equipment Closet
+Theater
+Foyer
+Living
+Dining
+Kitchen
+Laundry
+Bathroom
+Bedroom
+Front
+Patio
+Garage
+Room
+Back Door
+Front Door
+Lighting Control
+Game Room
+Master Bedroom
+Pantry
+Trim out
+Bedroom 4
+Upstairs Game Room
+Family Room
+Master Bath
+Upstairs Office
+Outdoor Living
+Outdoor Dining
+Camera System
+TBD
+Alarm Panel
+Tree Camera
+AV Sources
+Media Room
+Enter a new room.

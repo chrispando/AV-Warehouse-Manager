@@ -1,0 +1,326 @@
+﻿@{
+    ViewData["Title"] = "Truck";
+}
+
+@model Truck
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Move to Staging</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <h5>Are you sure?</h5>
+        
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="confirm" class="btn btn-primary">Yes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class = "border-bottom p-3">
+        <div asp-validation-summary="All" class = "text-danger"></div>
+        <div class = "form-group row">
+            <h2 class = "text-info pl-3">Update Product</h2>
+        </div>
+        <div class = "row">
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="serial"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="serial" class = "form-control" id="serial" value = "@Model.serial" disabled/>
+                    <span asp-validation-for = "serial" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="sku"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="sku" class = "form-control" id="sku" value = "@Model.sku" disabled/>
+                    <span asp-validation-for = "sku" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="make"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="make" class = "form-control" id="make" value = "@Model.make" disabled/>
+                    <span asp-validation-for = "make" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="model"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="model" class = "form-control" id="model" value = "@Model.model" disabled/>
+                    <span asp-validation-for = "model" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="quantity"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="quantity" type = "number" min="0" class = "form-control" id="quantity"  disabled/>
+                    <span asp-validation-for = "quantity" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="description"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="description" class = "form-control" id="description" value = "@Model.description" disabled/>
+                    <span asp-validation-for = "description" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="site"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="site" class = "form-control" id="site" value = "@Model.site" disabled/>
+                    <span asp-validation-for = "site" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="room"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="room" class = "form-control" id="room" value = "@Model.room" disabled/>
+                    <span asp-validation-for = "room" class = "text-danger"></span>
+                </div>
+            </div>
+
+             <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="technician"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="technician" class = "form-control" id="technician" value = "@Model.technician" disabled/>
+                    <span asp-validation-for = "technician" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="signature"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="signature" class = "form-control" id="signature" value = "@Model.signature" disabled/>
+                    <span asp-validation-for = "signature" class = "text-danger"></span>
+                </div>
+            </div>
+
+             <div class = "form-group row">
+                <div class = "col-4">
+                    <label>Product Time Stamp:</label>
+                </div>
+                <div class = "col-8">
+                    <input class = "form-control" id="createdTimeStamp" value = "@Model.createdTimeStamp.ToString()" disabled/>
+                    <span asp-validation-for = "createdTimeStamp" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label>Staged Time Stamp:</label>
+                </div>
+                <div class = "col-8">
+                    <input class = "form-control" id="stagedTimeStamp" value = "@Model.stagedTimeStamp.ToString()" disabled/>
+                    <span asp-validation-for = "stagedTimeStamp" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label>Truck Time Stamp:</label>
+                </div>
+                <div class = "col-8">
+                    <input class = "form-control" id="truckTimeStamp" value = "@Model.truckTimeStamp.ToString()" disabled/>
+                    <span asp-validation-for = "truckTimeStamp" class = "text-danger"></span>
+                </div>
+            </div>
+
+             <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="productUserStamp">Product User Stamp:</label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="productUserStamp" class = "form-control" id="productUserStamp" value = "@Model.productUserStamp" disabled/>
+                    <span asp-validation-for = "productUserStamp" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="stagingUserStamp">Staging User Stamp:</label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="stagingUserStamp" class = "form-control" id="stagingUserStamp" value = "@Model.stagingUserStamp" disabled/>
+                    <span asp-validation-for = "stagingUserStamp" class = "text-danger"></span>
+                </div>
+            </div>
+
+             <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="truckUserStamp">Truck User Stamp:</label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="truckUserStamp" class = "form-control" id="truckUserStamp" value = "@Model.truckUserStamp" disabled/>
+                    <span asp-validation-for = "truckUserStamp" class = "text-danger"></span>
+                </div>
+            </div>
+
+             
+
+
+            <div class="form-group row m-5" id = "myRow">
+                    <div class="col-8 offset-4 row">
+                         <div class="col">
+                            <a asp-action="Read" class = "btn btn-success  w-100">Back</a>
+                        </div>
+
+                       @* <div class="col">
+                           <button class = "btn btn-info w-100 sendBtn w-100" onclick = "myFunc()" >Update</button>
+                        </div>*@
+                       
+                        <div class="col">
+                            <button class = "deleteBtn btn btn-danger w-100" onclick = "deleteProduct()">Delete</button>
+                        </div>
+
+                        <div class="col">
+                            <button class = "moveBtn btn btn-secondary w-100" data-toggle="modal" data-target="#exampleModal">Move to Staging</button>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+<script>
+
+    const btn = document.querySelector('#confirm');
+        btn.onclick = (event) => {
+            event.preventDefault();
+            moveProduct();
+            
+        };
+
+
+var dataObject = JSON.stringify({
+'serial': document.getElementById("serial").value,
+'sku': document.getElementById("sku").value,
+'make': document.getElementById("make").value,
+'model': document.getElementById("model").value,
+'quantity': document.getElementById("quantity").value,
+'description': document.getElementById("description").value,
+'site': document.getElementById("site").value,
+'room': document.getElementById("room").value,
+'technician': document.getElementById("technician").value,
+'signature': document.getElementById("signature").value,
+'createdTimeStamp' : document.getElementById("createdTimeStamp").value,
+'stagedTimeStamp' : document.getElementById("stagedTimeStamp").value,
+'truckTimeStamp' : document.getElementById("truckTimeStamp").value,
+'productUserStamp' : document.getElementById("productUserStamp").value,
+'stagingUserStamp' : document.getElementById("stagingUserStamp").value,
+'truckUserStamp' : document.getElementById("truckUserStamp").value,
+
+    });
+//console.log(dataObject);
+
+function myFunc() { }
+
+function deleteProduct() { 
+    //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("SetDeleteSessionTruck","Truck")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("DetailDeleteTruck","Truck")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+}
+
+function moveProduct() {
+    //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("FinalDeleteTruck","Truck")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                //var urlToRedirect = '@Url.Action("Read","Truck")';
+                //window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("MoveTruckToStaging","Truck")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Read","Truck")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+
+
+}
+</script>

@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Truck";
+}
+
+@model List<Staging>
+
+
+<h1>Select Items</h1>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Sign</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <select class="form-select" name="installers" id="installers">
+          <option value="Ernesto">Ernesto</option>
+          <option value="Luis">Luis</option>
+          <option value="Eduardo">Eduardo</option>
+          <option value="Abner">Abner</option>
+          <option value="Chris">Chris</option>
+          <option value="Jeremy">Jeremy</option>
+          <option value="Reagan">Reagan</option>
+          <option value="Cory">Cory</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="techToTruck" class="btn btn-primary">Sign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table id = "myTable" class = "table table-bordered table-condensed table-striped table-hover sortable">
+    <thead>
+        <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>SKU</th>
+            <th>Quantity</th>
+            <th>Room</th>
+            <th>Select</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 0;
+                            @foreach(var product in Model)
+            {
+                                <tr id="@i">
+                                    <td>@product.make</td>
+                                    <td>@product.model</td>
+                                    <td>@product.serial</td>
+                                    <td>@product.sku</td>
+                                    <td>
+                                        <select id="quantity_@i" class="form-select">
+                                            @for(int idx = 1; idx <= @product.quantity; idx++)
+                                    {
+                                if (idx == @product.quantity)
+                                {
+                                            <option selected value=@idx>@idx</option>
+                                }
+                                else
+                                {
+                                            <option value=@idx>@idx</option>
+                                }
+                                
+                                    }
+                                        </select>
+                                    </td>
+                                    <td style="display:none;">@product.description</td>
+                                    <td style="display:none;">@product.site</td>
+                                    <td>@product.room</td>
+                                    <td><input type = "checkbox" class="form-check-input" value="@i"/></td>
+                                                    
+                                </tr>
+                i++;
+            }
+        }
+       
+    </tbody>
+</table>
+
+<div class="d-flex">
+<button type = "button" class="btn btn-primary w-25 m-4" data-toggle="modal" data-target="#exampleModal">Put on Truck</button>
+<a type = "button" class="btn btn-success w-25 m-4" asp-action = "Create">Go Back</a>
+</div>
+
+<script>
+    const btn = document.querySelector('#techToTruck');
+    const sb = document.querySelector('#installers');
+     
+        btn.onclick = (event) => {
+            event.preventDefault();
+            // show the selected index
+            putOnTruck(sb.options[sb.selectedIndex].text);
+        };
+function putOnTruck(technician) 
+{
+    var array = [];
+    var jsonArr = [];
+    var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+
+for (var i = 0; i < checkboxes.length; i++) {
+    array.push(checkboxes[i].value);
+}
+for (var i = 0; i < array.length; i++) {
+    var selectRow = document.getElementById(`${array[i]}`);
+    var col = selectRow.cells;
+     const sb2 = document.querySelector(`#quantity_${array[i]}`);
+       var jsonObj = {
+           serial : col[2].innerHTML,
+           sku : col[3].innerHTML,
+           make : col[0].innerHTML,
+           model : col[1].innerHTML,
+           quantity: sb2.options[sb2.selectedIndex].text,
+           description: col[5].innerHTML,
+           site : col[6].innerHTML,
+           room : col[7].innerHTML,
+           technician : technician,
+           signature : technician
+         }
+    jsonArr.push(jsonObj);
+}  
+    var dataObject = JSON.stringify(jsonArr);
+
+    //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("PutOnTruck","Truck")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Read","Truck")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+    
+}
+</script>

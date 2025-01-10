@@ -1,0 +1,34 @@
+﻿@model List<Staging>
+
+	@if(Model != null && Model.Count > 0){
+	<table class = "table">
+		<thead>
+			<tr>
+				<th>Serial Number</th>
+				<th>SKU</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Quantity</th>
+				<th>Description</th>
+				<th>Site</th>
+				<th>Room</th>
+			</tr>
+		</thead>
+		<tbody>
+		@foreach(Staging s in Model)
+			{
+				<tr>
+					<td>@s.serial</td>
+					<td>@s.sku</td>
+					<td>@s.make</td>
+					<td>@s.model</td>
+					<td>@s.quantity</td>
+					<td>@s.description</td>
+					<td>@s.site</td>
+					<td>@s.room</td>
+				</tr>
+			}
+		
+		</tbody>
+	</table>
+	}

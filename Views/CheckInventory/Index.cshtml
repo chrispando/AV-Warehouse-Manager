@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "CSV";
+}
+
+<form action="" 
+      enctype="multipart/form-data"  
+      method="post">
+    <dl>
+        <dt>
+            <label for="FileUpload_FormFile" class="form-label">File</label>
+        </dt>
+        <dd>
+            <input id="FileUpload_FormFile" type="file" 
+                name="file1" class="form-control"/>
+        </dd>
+    </dl>
+
+    <input class="btn btn-primary" type="submit" value="Upload" />
+
+    <div style="margin-top:15px">
+        <output name="result"></output>
+    </div>
+</form>
+
+<script>
+  "use strict";
+
+  function AJAXSubmit (oFormElement) {
+
+
+    var oReq = new XMLHttpRequest();
+    oReq.onload = function(e) { 
+    oFormElement.elements.namedItem("result").value = 
+      'Result: ' + this.status + ' ' + this.statusText;
+    };
+    oReq.open("post", oFormElement.action);
+    oReq.send(new FormData(oFormElement));
+  }
+</script>

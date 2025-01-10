@@ -1,0 +1,82 @@
+﻿@model List<Product>
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<h1>Update</h1>
+
+<table id = "myTable" class = "table">
+    <thead>
+        <tr>
+            <th>Serial</th>
+            <th>SKU</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Product p in Model)
+        {
+            
+            <tr>
+                <td>@p.serial</td>
+                <td>@p.sku</td>
+                <td>@p.make</td>
+                <td>@p.model</td>
+                <td>@p.quantity</td>
+                <td>@p.description</td>
+                <td>@p.location</td>
+                <td><button class = "updateBtn btn btn-info" onclick = "updateProduct()">Edit</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function updateProduct(){
+        $("#myTable").unbind().on('click','.updateBtn',function(){
+            var currentRow = $(this).closest("tr")[0];
+            var cells = currentRow.cells;
+            var dataObject = JSON.stringify({
+    'serial': cells[0].textContent,
+    'sku': cells[1].textContent,
+    'make': cells[2].textContent,
+    'model': cells[3].textContent,
+    'quantity': cells[4].textContent,
+    'description': cells[5].textContent,
+    'location': cells[6].textContent,
+
+        });
+
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("SetUpdateSession","Inventory")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Detail","Inventory")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+        event.stopPropagation? event.stopPropagation() : event.cancelBubble = true;
+     return false;
+        });
+
+        return false;
+    }
+
+</script>

@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Search";
+}
+
+@model List<SounDesignSearchProduct>
+<h1>Search All</h1>
+<div>
+
+	<input type = "text" id="search" />
+	<button type = "button" id = "searchButton" class="btn btn-primary" onclick="search()">Search</button>
+
+</div>
+
+
+@if(Model != null){
+		<table class="table table-bordered table-condensed table-striped table-hover sortable">
+			<thead>
+				<tr>
+					<th>Make</th>
+					<th>Model</th>
+					<th>Serial</th>
+					<th>SKU</th>
+					<th>Quantity</th>
+					<th>Description</th>
+					<th>Location</th>
+					<th>Site</th>
+					<th>Room</th>
+					<th>Technician</th>
+					<th>Signature</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach(SounDesignSearchProduct sd in Model)
+			{
+				<tr>
+					<td>@sd.make</td>
+					<td>@sd.model</td>
+					<td>@sd.serial</td>
+					<td>@sd.sku</td>
+					
+					<td>@sd.quantity</td>
+					<td>@sd.description</td>
+					<td>@sd.location</td>
+					<td>@sd.site</td>
+					<td>@sd.room</td>
+					<td>@sd.technician</td>
+					<td>@sd.signature</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	}
+else{
+	<p>Enter a make, model, or description.</p>
+}
+
+
+<script>
+	function search() { 
+        var searchString = document.getElementById("search").value;
+        
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("Search","SearchAll")',
+        contentType: 'application/json',
+        data: JSON.stringify(searchString),
+		success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Search1","SearchAll")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+       
+        });
+        //end of ajax
+	}
+</script>
+	

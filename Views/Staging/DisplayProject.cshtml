@@ -1,0 +1,120 @@
+﻿@model List<Staging>
+@{
+    ViewData["Title"] = "Staging";
+}
+
+<div id="divPartial">
+    @Html.Partial("_ProjectName",Model[0].site)
+</div>
+
+<button type = "button" class="btn btn-secondary" onclick="addToProject()">Add To Project</button>
+<hr />
+<table id = "myTable" class = "table table-bordered table-condensed table-striped table-hover sortable">
+    <thead>
+        <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>SKU</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Site</th>
+            <th>Room</th>
+            <th>Edit</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var product in Model)
+        {
+            <tr>
+                <td>@product.make</td>
+                <td>@product.model</td>
+                <td>@product.serial</td>
+                <td>@product.sku</td>
+                <td>@product.quantity</td>
+                <td>@product.description</td>
+                <td>@product.site</td>
+                <td>@product.room</td>
+                <td><button class="updateBtn btn btn-info" onclick="edit()">Edit</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+function edit(){
+        $("#myTable").unbind().on('click','.updateBtn',function(){
+            var currentRow = $(this).closest("tr")[0];
+            var cells = currentRow.cells;
+            var dataObject = JSON.stringify({
+    'serial': cells[2].textContent,
+    'sku': cells[3].textContent,
+    'make': cells[0].textContent,
+    'model': cells[1].textContent,
+    'quantity': cells[4].textContent,
+    'description': cells[5].textContent,
+    'site': cells[6].textContent,
+    'room': cells[7].textContent,
+        });
+
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("SetUpdateSessionDetailPage","Staging")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("DetailUpdatePage","Staging")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+        event.stopPropagation? event.stopPropagation() : event.cancelBubble = true;
+     return false;
+        });
+
+        return false;
+    }
+
+
+//-------------------------------------------------------------------------------------------------//
+
+
+function addToProject(){
+      var table = document.getElementById('myTable');
+      var projectName=table.rows[1].cells[6].innerHTML;
+        var dataObject = JSON.stringify({
+        'projectName': projectName
+    });
+    $.ajax({
+    type: "POST",
+    url: '@Url.Action("NewProject", "Staging")',
+    contentType: 'application/json',
+    data: JSON.stringify(dataObject),
+    success:function(data) {
+      if(data.status=="true")
+      {
+        var urlToRedirect= '@Url.Action("Create","Staging")';
+        window.location.href = urlToRedirect; //Redirect here
+      }
+      else
+      {
+        alert(data.msg)
+      }
+    },
+    error: function () {
+        alert("Fail");
+    }
+});
+    }
+</script>
+

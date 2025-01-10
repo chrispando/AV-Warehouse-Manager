@@ -1,0 +1,33 @@
+﻿@model List<Product>
+
+	@if(Model != null && Model.Count > 0){
+	<table class = "table">
+		<thead>
+			<tr>
+				<th>Serial Number</th>
+				<th>SKU</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Quantity</th>
+				<th>Description</th>
+				<th>Location</th>
+			</tr>
+		</thead>
+		<tbody>
+		@foreach(Product p in Model)
+			{
+				<tr>
+					<td>@p.serial</td>
+					<td>@p.sku</td>
+					<td>@p.make</td>
+					<td>@p.model</td>
+					<td>@p.quantity</td>
+					<td>@p.description</td>
+					<td>@p.location</td>
+				</tr>
+			}
+		
+		</tbody>
+	</table>
+	}
+	

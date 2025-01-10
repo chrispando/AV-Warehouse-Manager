@@ -1,0 +1,188 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Inventory";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+        
+    }
+}
+ @*<form class="d-flex">
+        <input class="form-control me-sm-2" type="text" placeholder="Search">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+      </form>*@
+      <form asp-action="Read" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Read">Back to Full List</a>
+        </p>
+    </div>
+</form>
+<h1>Inventory</h1>
+ <a class="btn btn-secondary" asp-controller = "Inventory" asp-action="Create">Add To Inventory</a>
+<table id = "myTable" class = "table table-bordered table-condensed table-striped table-hover sortable">
+    <thead>
+        <tr>
+            
+            <th>
+                <a asp-action="Read" 
+                asp-route-searchString = "@ViewData["CurrentFilter"]"
+                asp-route-sortOrder="@ViewData["MakeSortParm"]">@Html.DisplayNameFor(model => model.make)</a>
+            </th>
+            <th>
+                <a asp-action="Read" 
+                asp-route-searchString = "@ViewData["CurrentFilter"]"
+                asp-route-sortOrder="@ViewData["ModelSortParm"]">@Html.DisplayNameFor(model => model.model)</a>
+            </th>
+            <th>Serial Number</th>
+            <th>SKU</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Product p in Model)
+        {
+            <tr>
+                <td>@p.make</td>
+                <td>@p.model</td>
+                <td>@p.serial</td>
+                <td>@p.sku</td>
+                <td>@p.quantity</td>
+                <td>@p.description</td>
+                <td>@p.location</td>
+                <td><button class = "updateBtn btn btn-info" onclick = "updateProduct()">Edit</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class = "container d-flex">
+    <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Page Size
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+    <a class="dropdown-item"  asp-controller="Inventory" asp-action="Read" 
+    asp-route-pg="@(pager.CurrentPage)" 
+    asp-route-searchString = "@ViewData["CurrentFilter"]"
+    asp-route-pageSize="6">6</a>
+
+    <a class="dropdown-item"  asp-controller="Inventory" asp-action="Read" 
+    asp-route-pg="@(pager.CurrentPage)" 
+    asp-route-searchString = "@ViewData["CurrentFilter"]"
+    asp-route-pageSize="12">12</a>
+
+    <a class="dropdown-item"  asp-controller="Inventory" asp-action="Read" 
+    asp-route-pg="@(pager.CurrentPage)" 
+    asp-route-searchString = "@ViewData["CurrentFilter"]"
+    asp-route-pageSize="24">24</a>
+  </div>
+</div>
+    <div class="ml-auto p-2">
+    @if (pager.TotalPages > 0)
+    {
+
+        <ul class = "pagination justify-content-end">
+            @if (pager.CurrentPage > 1)
+            {
+                <li class = "page-item">
+                    <a class = "page-link" asp-controller = "Inventory" 
+                    asp-action="Read" 
+                    asp-route-searchString = "@ViewData["CurrentFilter"]" 
+                    asp-route-pg="1" 
+                    asp-route-pageSize="@pager.PageSize">First</a>
+                </li>
+                <li>
+                    <a class = "page-link" asp-controller = "Inventory" 
+                    asp-action="Read" 
+                    asp-route-searchString = "@ViewData["CurrentFilter"]" 
+                    asp-route-pg="@(pager.CurrentPage-1)" 
+                    asp-route-pageSize="@pager.PageSize">Previous</a>
+                </li>
+            }
+
+
+            @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+            {
+                <li class = "page-item @(pge == pager.CurrentPage ? "active":"")">
+                    <a class = "page-link" asp-controller = "Inventory" asp-action="Read" 
+                    asp-route-searchString = "@ViewData["CurrentFilter"]" 
+                    asp-route-pg="@pge" 
+                    asp-route-pageSize="@pager.PageSize">@pge</a>
+                </li>
+            }
+
+            @if (pager.CurrentPage < pager.TotalPages)
+            {
+                <li class = "page-item">
+                    <a class = "page-link" asp-controller = "Inventory" 
+                    asp-action = "Read" 
+                    asp-route-searchString = "@ViewData["CurrentFilter"]" 
+                    asp-route-pg="@(pager.CurrentPage+1)" 
+                    asp-route-pageSize="@pager.PageSize">Next</a>
+                </li>
+                <li>
+                    <a class = "page-link" asp-controller = "Inventory" asp-action = "Read" 
+                    asp-route-searchString = "@ViewData["CurrentFilter"]" 
+                    asp-route-pg="@(pager.TotalPages)" 
+                    asp-route-pageSize="@pager.PageSize">Last</a>
+                </li>
+            }
+        </ul>
+    }
+    </div>
+</div>
+
+<script>
+    function updateProduct(){
+        $("#myTable").unbind().on('click','.updateBtn',function(){
+            var currentRow = $(this).closest("tr")[0];
+            var cells = currentRow.cells;
+            var dataObject = JSON.stringify({
+    'serial': cells[2].textContent,
+    'sku': cells[3].textContent,
+    'make': cells[0].textContent,
+    'model': cells[1].textContent,
+    'quantity': cells[4].textContent,
+    'description': cells[5].textContent,
+    'location': cells[6].textContent,
+
+        });
+
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("SetUpdateSession","Inventory")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Detail","Inventory")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+        event.stopPropagation? event.stopPropagation() : event.cancelBubble = true;
+     return false;
+        });
+
+        return false;
+    }
+
+</script>

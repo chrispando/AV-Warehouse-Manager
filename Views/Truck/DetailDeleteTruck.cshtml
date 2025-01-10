@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Truck";
+}
+
+@model Truck
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class = "border-bottom p-3">
+        <div asp-validation-summary="All" class = "text-danger"></div>
+        <div class = "form-group row">
+            <h2 class = "text-info pl-3">Delete Product</h2>
+        </div>
+        <div class = "row">
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="serial"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="serial" class = "form-control" id="serial" value = "@Model.serial" disabled/>
+                    <span asp-validation-for = "serial" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="sku"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="sku" class = "form-control" id="sku" value = "@Model.sku" disabled/>
+                    <span asp-validation-for = "sku" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="make"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="make" class = "form-control" id="make" value = "@Model.make" disabled/>
+                    <span asp-validation-for = "make" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="model"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="model" class = "form-control" id="model" value = "@Model.model" disabled/>
+                    <span asp-validation-for = "model" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="quantity"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="quantity" type = "number" min="0" class = "form-control" id="quantity" disabled />
+                    <span asp-validation-for = "quantity" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="description"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="description" class = "form-control" id="description" value = "@Model.description" disabled/>
+                    <span asp-validation-for = "description" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="site"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="site" class = "form-control" id="site" value = "@Model.site" disabled/>
+                    <span asp-validation-for = "site" class = "text-danger"></span>
+                </div>
+            </div>
+
+            <div class = "form-group row">
+                <div class = "col-4">
+                    <label asp-for="room"></label>
+                </div>
+                <div class = "col-8">
+                    <input asp-for="room" class = "form-control" id="room" value = "@Model.room"disabled/>
+                    <span asp-validation-for = "room" class = "text-danger"></span>
+                </div>
+            </div>
+
+             
+
+
+            <div class="form-group row m-5" id = "myRow">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                           <button type = "button" onclick = "finalDelete()" class = "btn btn-danger w-100 sendBtn">Delete</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Detail" class = "btn btn-success">Back</a>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+    <script>
+function finalDelete() { 
+    var dataObject = JSON.stringify({
+    'serial': document.getElementById("serial").value,
+    'sku': document.getElementById("sku").value,
+    'make': document.getElementById("make").value,
+    'model': document.getElementById("model").value,
+    'quantity': document.getElementById("quantity").value,
+    'description': document.getElementById("description").value,
+    'site': document.getElementById("site").value,
+    'room': document.getElementById("room").value,
+        });
+
+        //start of ajax
+        $.ajax({
+        type:"POST",
+        url: '@Url.Action("FinalDeleteTruck","Truck")',
+        contentType: 'application/json',
+        data: JSON.stringify(dataObject),
+        success:function(data){
+            if(data.status == 'true'){
+                var urlToRedirect = '@Url.Action("Read","Truck")';
+                window.location.href = urlToRedirect;
+            }
+            else{
+                alert(data.msg);
+            }
+        },
+        error:function(){
+            alert("Fail");
+        }
+        });
+        //end of ajax
+}
+    </script>

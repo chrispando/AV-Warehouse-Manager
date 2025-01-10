@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "CSV";
+}
+
+@using SounDesign_Web_02.Models
+@model List<CheckInventory>
+
+<table class = "table table-bordered table-condensed table-striped table-hover sortable">
+	<thead>
+		<tr>
+			<th>Make</th>
+			<th>Model</th>
+			<th>Required</th>
+			<th>In stock</th>
+			<th>Order</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach(CheckInventory cI in Model)
+		{
+			if (cI.make == "Brand" && cI.model == "Model")
+			{
+				
+			}			
+			else if (cI.required <= cI.stock) // can be fully filled
+			{
+				<tr class="table-success">
+				<td>@cI.make</td>
+				<td>@cI.model</td>
+				<td>@cI.required</td>
+				<td>@cI.stock</td>
+				<td>@cI.order</td>
+			</tr>
+			}else if (cI.stock>0){  // can be partially filled
+
+				<tr class="table-warning">
+				<td>@cI.make</td>
+				<td>@cI.model</td>
+				<td>@cI.required</td>
+				<td>@cI.stock</td>
+				<td>@cI.order</td>
+				</tr>
+			}else {// out of stock, stock = 0
+				<tr>
+				<td>@cI.make</td>
+				<td>@cI.model</td>
+				<td>@cI.required</td>
+				<td>@cI.stock</td>
+				<td>@cI.order</td>
+				</tr>
+			}
+			
+		}
+	</tbody>
+</table>

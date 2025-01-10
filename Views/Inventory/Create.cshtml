@@ -1,0 +1,232 @@
+﻿
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<h1>Create Inventory</h1>
+
+<div id="divPartial">
+    @Html.Partial("_ProductsList")
+</div>
+
+
+<div class="m-5">
+    <div class = "container border">
+    <div class = "form-group">
+       <div class = "col-4">
+            <label for="newSerialNumber">Serial:</label>
+        </div>
+        <input type='text' class = "form-control" id='newSerialNumber'/>
+    </div>
+    <div class = "form-group">
+        <label for="newSkuNumber">SKU:</label>
+        <input type='text' class = "form-control" id='newSkuNumber'/>
+    </div>
+    <div class = "form-group">
+        <label for="newMake">Make:</label>
+        <input type='text'class = "form-control"  id='newMake' required/>
+    </div>
+    <div class = "form-group">
+       <label for="newModel">Model:</label>
+        <input type='text'class = "form-control" id='newModel' required/>
+    </div>
+    <div class = "form-group">
+       <label for="newQuantity">Quantity:</label>
+        <input type='number' min = "0" class = "form-control" id='newQuantity' required/>
+    </div>
+    <div class = "form-group">
+       <label for="newDescription">Description:</label>
+        <input type='text' class = "form-control" id='newDescription' required/>
+    </div>
+    <div class = "form-group">
+       <label for="newLocation">Location:</label>
+        <input type='text' class = "form-control" id='newLocation' required/>
+    </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class = "col-md-12 bg-light text-right">
+        <button type="button" class="btn btn-info" onclick="addProduct()" >Add Product</button>
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-danger" onclick = "remove()">Remove</button>
+            <div class="btn-group" role="group">
+            <button id="btnGroupDrop4" 
+            type="button" 
+            class="btn btn-danger dropdown-toggle" 
+            data-bs-toggle="dropdown" 
+            aria-haspopup="true" 
+            aria-expanded="false"
+            ></button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop4">
+             <a class="dropdown-item" onclick = "removeAll()">Remove All</a>
+            </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" onclick = "submitList()">Submit</button>
+        </div>
+      </div>
+</div>
+
+<script>
+    var input = document.getElementById("newSkuNumber");
+input.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    getProductFromSKU(document.getElementById("newSkuNumber").value);
+  }
+});
+
+var serialInput = document.getElementById("newSerialNumber");
+serialInput.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    getProductFromSerial(document.getElementById("newSerialNumber").value);
+  }
+});
+
+
+
+    function addProduct(){
+     
+        var dataObject = {
+    'serial': $("#newSerialNumber").val(),
+    'sku': $("#newSkuNumber").val(),
+    'make': $("#newMake").val(),
+    'model': $("#newModel").val(),
+    'quantity': $("#newQuantity").val(),
+    'description': $("#newDescription").val(),
+    'location':$("#newLocation").val()
+        }
+        if(dataObject.make!='' && dataObject.model !='' && dataObject.quantity != ''
+        && dataObject.description != '' && dataObject.location !=''){
+        $('#divPartial').load('/Inventory/_ProductsList',dataObject);
+        }
+        else{
+        alert("Please fill out required fields.");
+        }
+    document.getElementById('newSerialNumber').value = '';
+       document.getElementById('newSkuNumber').value = '';
+       document.getElementById('newMake').value = '';
+       document.getElementById('newModel').value = '';
+       document.getElementById('newQuantity').value = '';
+       document.getElementById('newDescription').value = '';
+       document.getElementById('newLocation').value = '';
+       document.getElementById("newSerialNumber").focus();
+    }
+
+    function remove(){
+        $('#divPartial').load('/Inventory/Remove');
+    }
+
+    function removeAll(){
+        $('#divPartial').load('/Inventory/RemoveAll');
+    }
+
+    
+
+   function submitList(){
+       
+    $.ajax({
+        url:"AddToInventory",
+        type:"POST",
+        success:function(data){
+         var urlToRedirect= '@Url.Action("Read","Inventory")';
+        window.location.href = urlToRedirect; //Redirect here
+        }
+        
+    });
+       
+
+   }
+
+   
+</script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+<script type="text/javascript">
+var textByLine = [];
+var arr = [];
+var onMakeInput = document.getElementById("newMake");
+var newModel = document.getElementById("newModel");
+
+
+//jQuery.get('../files/Brand_Names.txt', function(data) {
+//    //console.log(data);
+//    textByLine = data.split("\n");
+//    //alert(textByLine.length);
+//});
+
+
+jQuery(function($) {
+
+    //start of ajax
+            
+            $.ajax({
+                url: '@Url.Action("GetListOfBrands", "Inventory")',
+                type: "GET",
+                //dataType: 'json',
+                //data: JSON.stringify(dataToPost),
+                cache: false,
+                //contentType: "application/json",
+                success: function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        textByLine.push(data[i]);
+                    }
+                    //console.log("Brands", textByLine);
+
+                  
+                }
+            });
+            //end of ajax
+
+
+    $("#newMake").autocomplete({
+        source: textByLine
+    });
+
+
+
+    onMakeInput.addEventListener("keypress", function(event) {
+        arr = [];
+        if (event.key === "Enter") {
+            //start of ajax
+            var dataToPost = JSON.stringify({ 'make': document.getElementById("newMake").value });
+
+            $.ajax({
+                url: '@Url.Action("GetModelFromMake", "Inventory")',
+                type: "POST",
+                dataType: 'json',
+                data: JSON.stringify(dataToPost),
+                cache: false,
+                contentType: "application/json",
+                success: function(data) {
+                    //console.log("DATA:", data);
+                    for (var i = 0; i < data.length; i++) {
+                        arr.push(data[i]);
+                    }
+                    //console.log("ARR", arr);
+
+                    $("#newModel").autocomplete({
+                        source: arr
+                    });
+
+                }
+            });
+            //end of ajax
+
+
+        }
+
+
+    });
+});
+
+
+
+    
+
+    
+</script>
+
+
+
