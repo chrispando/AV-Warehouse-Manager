@@ -13,7 +13,7 @@ namespace SounDesign_Web_02.Data.DAO
 
         public SqlConnection Connection { get; set; }
 
-        public string connstring = String.Format("Server=(localdb)\\mssqllocaldb;Database=aspnet-SounDesign_Web_02-6EC5A6E4-A32F-4F2B-946E-32A26EE3B1A1;Trusted_Connection=True;MultipleActiveResultSets=true");
+        public string connstring = String.Format("<Connection String>");
 
         private static Database _instance = null;
 
