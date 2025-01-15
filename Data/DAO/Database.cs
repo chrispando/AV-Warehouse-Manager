@@ -19,8 +19,8 @@ namespace SounDesign_Web_02.Data.DAO
 
         public Database()
         {
-            this.Server = "(localdb)\\mssqllocaldb";
-            this.DatabaseName = "aspnet-SounDesign_Web_02-6EC5A6E4-A32F-4F2B-946E-32A26EE3B1A1";
+            this.Server = "";
+            this.DatabaseName = "";
         }
         public static Database Instance()
         {
